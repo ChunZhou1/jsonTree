@@ -85,9 +85,8 @@ export const processAfterFind = (
 
 /////////////////delete node///////////////////////
 
-
 const deleteLeafNode = (
-  preNode: Nodes1["node1"],  //parents node
+  preNode: Nodes1["node1"], //parents node
   node: Nodes1["node1"], //current node
   key: string
 ) => {
@@ -107,7 +106,7 @@ const deleteLeafNode = (
 /////////////////edit node///////////////////////
 const modifyNode = (
   preNode: Nodes1["node1"], //parents node
-  node: Nodes1["node1"],   //current node
+  node: Nodes1["node1"], //current node
   key: string,
   newValue: any
 ) => {
@@ -146,20 +145,82 @@ export const judgeValue = (
   obj: JsonObj["obj"] | string,
   oldObj: JsonObj["obj"] | string
 ) => {
-  console.log(obj);
   if (typeof obj === "object" && typeof oldObj === "object") {
     for (let key in oldObj) {
-      if (obj[key] === "" || obj[key] === undefined) {
+      if (
+        obj[key] === "" ||
+        obj[key] === undefined ||
+        validateValue(oldObj[key], obj[key]) === false
+      ) {
         console.log("error");
         return false;
       }
     }
   } else {
-    if (obj === "" || obj === undefined) {
+    if (
+      obj === "" ||
+      obj === undefined ||
+      validateValue(oldObj, obj.toString()) === false
+    ) {
       console.log("error");
       return false;
     }
   }
+  return true;
+};
+
+// convert string value to orginal value
+const assignValue = (oldValue: any, newValue: any) => {
+  let result: any;
+  switch (typeof oldValue) {
+    case "number":
+      result = Number(newValue);
+      break;
+
+    case "boolean":
+      console.log("boolean");
+      if (newValue === "true") {
+        result = true;
+      } else {
+        result = false;
+      }
+
+      break;
+
+    default:
+      result = newValue;
+      break;
+  }
+
+  return result;
+};
+
+//onvert string obj to orginal obj
+export const convertValue = (oldObj: any, newObj: any) => {
+  if (typeof newObj !== "object") {
+    return assignValue(oldObj, newObj);
+  }
+
+  for (let key in newObj) {
+    newObj[key] = assignValue(oldObj[key], newObj[key]);
+  }
+
+  return newObj;
+};
+
+export const validateValue = (oldValue: any, newValue: string) => {
+  if (typeof oldValue === "number") {
+    if (isNaN(convertValue(oldValue, newValue))) {
+      return false;
+    }
+  }
+
+  if (typeof oldValue === "boolean") {
+    if (newValue != "true" && newValue != "false") {
+      return false;
+    }
+  }
+
   return true;
 };
 

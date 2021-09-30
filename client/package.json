@@ -29,6 +29,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.7.0",
     "@babel/polyfill": "^7.12.1",
     "@popperjs/core": "^2.8.0",
     "@types/react": "^17.0.21",

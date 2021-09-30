@@ -1,13 +1,13 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import getRequest from "../api";
-import { objToString } from "../api";
+
 import { processAfterFind } from "../api";
 
-import { Menu, Dropdown, Modal } from "antd";
+import { Modal } from "antd";
 
-import { ModifyMenu, AddMenu } from "./menu";
+import { SubNode, LeafNode } from "./node";
 
 //test data
 import { data1, data2 } from "../mock_data";
@@ -61,12 +61,11 @@ function findStr(obj: string) {
 }
 
 const JsonTree: React.FC<Nodes> = ({ node, handleReflash, preNode }) => {
-  let element = [];
-  let temp;
   //If we want to display sub tree(expand/Collapse), the element which be put into the array should be display
   const [display, setDisplay] = useState([]);
-  const [count, setCount] = useState(0); //used to rendering the current node
+
   const [visible, setVisible] = useState(false); //if display error message;
+  const [count, setCount] = useState(0);
 
   //close error message dialog
   const handleOK = () => {
@@ -75,6 +74,7 @@ const JsonTree: React.FC<Nodes> = ({ node, handleReflash, preNode }) => {
 
   const handleCollapse = (str: string) => {
     //switch between expand and Collapse,it will be displayed when add subNode name to the array. str=subNode name
+
     let tempArr = display.slice(0);
     let index = display.findIndex(findStr, str);
     if (index === -1) {
@@ -98,97 +98,114 @@ const JsonTree: React.FC<Nodes> = ({ node, handleReflash, preNode }) => {
       if (result === false) {
         //display error message
         setVisible(true);
-      } else {
-        //we need to rendering whole tree
-        handleReflash();
+        return;
       }
     } else {
       if (type === "modify") {
         processAfterFind(preNode, node, key, newValue, "modify");
 
-        if (typeof node !== "object") {
-          handleReflash();
-        } else {
-          //we do not need to rendering whole tree
+        if (typeof node === "object") {
           setCount(count + 1);
+          return;
         }
       } else {
         if (type === "add") {
+          console.log("begin to add");
           processAfterFind(preNode, node, key, newValue, "add");
-          handleReflash();
         }
       }
     }
+
+    handleReflash();
+  };
+
+  //The function used to rendering tree
+  const render_node = (
+    node: Nodes["node"],
+    preNode: Nodes["node"],
+    handleCallBack1: Function,
+    handleCollapse: Function
+  ) => {
+    let element = [];
+    let temp;
+    let visible_element;
+
+    if (typeof node !== "object") {
+      temp = (
+        <LeafNode
+          preNode={preNode}
+          key={node}
+          keys={null}
+          value={node}
+          callBackFun={handleCallBack1}
+        />
+      );
+      element.push(temp);
+    } else {
+      //The node is object,next we will judge if it contain the array of child node
+      for (let key in node) {
+        if (Array.isArray(node[key]) === false) {
+          //we will display directly
+          const temp = (
+            <LeafNode
+              preNode={preNode}
+              key={key}
+              keys={key}
+              value={node[key]}
+              callBackFun={handleCallBack1}
+            />
+          );
+          element.push(temp);
+        } else {
+          visible_element =
+            display.findIndex(findStr, key) === -1 ? false : true;
+
+          let tempArray: { [propName: string]: any } = node[key];
+
+          //display array
+          const subTree = tempArray.map((item: any) => {
+            return (
+              <JsonTree
+                node={item}
+                handleReflash={handleReflash}
+                preNode={tempArray}
+              />
+            );
+          });
+
+          //display sub node
+
+          const temp = (
+            <div style={{ marginBottom: "5px" }} key={key}>
+              <SubNode
+                str={key}
+                handleClick={handleCollapse}
+                visible={visible_element}
+              />
+
+              {visible_element && (
+                <div style={{ marginLeft: "5%" }}>{subTree}</div>
+              )}
+            </div>
+          );
+          element.push(temp);
+        }
+      }
+    }
+    return element;
   };
 
   //The code below is used to display tree
-  if (typeof node !== "object") {
-    temp = (
-      <LeafNode
-        preNode={preNode}
-        key={node}
-        keys={null}
-        value={node}
-        callBackFun={handleCallBack1}
-      />
-    );
-    element.push(temp);
-  } else {
-    //The node is object,next we will judge if it contain the array of child node
-    for (let key in node) {
-      if (Array.isArray(node[key]) === false) {
-        //we will display directly
-        const temp = (
-          <LeafNode
-            preNode={preNode}
-            key={key}
-            keys={key}
-            value={node[key]}
-            callBackFun={handleCallBack1}
-          />
-        );
-        element.push(temp);
-      } else {
-        //The node contain the array of child node, we will display subNode
-        let visible; //expand or Collapse
 
-        //judge if we should display sub tree(Collapse/expand)
-        if (display.findIndex(findStr, key) === -1) {
-          visible = false;
-        } else {
-          visible = true;
-        }
-
-        let tempArray: { [propName: string]: any } = node[key];
-
-        //display array
-        const subTree = tempArray.map((item: any) => {
-          return (
-            <JsonTree
-              node={item}
-              handleReflash={handleReflash}
-              preNode={tempArray}
-            />
-          );
-        });
-
-        //display sub node according to var visible
-        const temp = (
-          <div style={{ marginBottom: "5px" }} key={key}>
-            <SubNode str={key} handleClick={handleCollapse} visible={visible} />
-
-            {visible && <div style={{ marginLeft: "10%" }}>{subTree}</div>}
-          </div>
-        );
-        element.push(temp);
-      }
-    }
-  }
+  const element_r = useMemo(() => {
+    console.log("enter,enter");
+    return render_node(node, preNode, handleCallBack1, handleCollapse);
+  }, [JSON.stringify(preNode), display]);
 
   return (
     <div>
-      {element != [] && (
-        <div style={{ marginBottom: "5%", width: "50%" }}>{element}</div>
+      {element_r != [] && (
+        <div style={{ marginBottom: "5%", width: "100%" }}>{element_r}</div>
       )}
       <Modal
         title="Sorry"
@@ -207,140 +224,6 @@ const JsonTree: React.FC<Nodes> = ({ node, handleReflash, preNode }) => {
           it, I am not be able to add node, because I can not remeber key value.
           Sorry!
         </h3>
-      </Modal>
-    </div>
-  );
-};
-
-//The SubNode //////////
-interface SubNodesProp {
-  str?: string;
-  handleClick?: Function;
-  visible?: boolean;
-}
-
-const SubNode: React.FC<SubNodesProp> = ({ str, handleClick, visible }) => {
-  const onClick = () => {
-    handleClick(str);
-  };
-  return (
-    <span
-      style={{ color: visible ? "red" : "#5377a6", fontWeight: 700 }}
-      onClick={onClick}
-    >
-      {str}
-    </span>
-  );
-};
-
-interface LeafNodeProp {
-  preNode: {
-    [propName: string]: any[];
-  };
-  keys: string;
-  value: any;
-  callBackFun: Function;
-}
-
-//The LeafNode///////////////////////////////////
-
-const LeafNode: React.FC<LeafNodeProp> = ({
-  preNode,
-  keys,
-  value,
-  callBackFun,
-}) => {
-  const [visible, setVisible] = useState(false); //if display edit and add dialog
-  const [title, setTitle] = useState(""); //set title of dialog
-  const [addDisable, setAddDisable] = useState(true); //set if user can click add button
-
-  useEffect(() => {
-    //if preNode only contain one element,I believe this is not be added but can be edited,EX:price
-    if (Array.isArray(preNode) === true) {
-      setAddDisable(false);
-    } else {
-      setAddDisable(true);
-    }
-  }, []);
-
-  //user click popup menu
-  const onClick = (e: any) => {
-    switch (e.key) {
-      case "DELETE":
-        callBackFun(keys, value, null, "delete");
-        break;
-
-      case "MODIFY":
-        //display edit dialog
-        setTitle("MODIFY");
-        setVisible(true);
-        break;
-
-      case "ADD":
-        //display add dialog
-        setTitle("ADD");
-        setVisible(true);
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  //user close dialog and do not want to edit or modify
-  const onClose = () => {
-    setVisible(false);
-  };
-
-  //user close dialog and want to modify
-
-  const callBackModify = (input: any) => {
-    callBackFun(keys, value, input, "modify");
-    setVisible(false);
-  };
-
-  //user close dialog and want to add
-  const callBackAdd = (input: any) => {
-    callBackFun(keys, value, input, "add");
-    setVisible(false);
-  };
-
-  //the popdown menu
-  const menu = (
-    <Menu onClick={onClick}>
-      <Menu.Item disabled={addDisable} key="ADD">
-        Add
-      </Menu.Item>
-      <Menu.Item key="DELETE">Delete</Menu.Item>
-      <Menu.Item key="MODIFY">Edit</Menu.Item>
-    </Menu>
-  );
-  return (
-    <div>
-      <Dropdown overlay={menu} trigger={["contextMenu"]}>
-        <div style={{ marginBottom: "5px" }}>
-          {keys !== null && (
-            <span style={{ fontWeight: 700 }}>{keys}:&nbsp;&nbsp;</span>
-          )}
-          <span style={{ color: "blue" }}>{objToString(value)}</span>
-        </div>
-      </Dropdown>
-      <Modal
-        title={title}
-        visible={visible}
-        onOk={onClose}
-        onCancel={onClose}
-        width={400}
-        closable={true}
-        centered={true}
-        maskClosable={false}
-        footer={null}
-        destroyOnClose={true}
-      >
-        {title === "MODIFY" && (
-          <ModifyMenu keys={keys} value={value} fun={callBackModify} />
-        )}
-        {title === "ADD" && <AddMenu preNode={preNode} fun={callBackAdd} />}
       </Modal>
     </div>
   );

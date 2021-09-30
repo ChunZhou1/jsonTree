@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import { Input, Button, Modal } from "antd";
 import { string } from "prop-types";
-import { judgeValue } from "../api";
+import { judgeValue, convertValue, validateValue } from "../api";
 
 interface ModifyMenuProp {
   keys: string;
@@ -11,34 +11,54 @@ interface ModifyMenuProp {
 }
 ////////////////////////edit dialog//////////////////////////
 export const ModifyMenu: React.FC<ModifyMenuProp> = ({ keys, value, fun }) => {
-  const [input, setInput] = useState(value.toString());
+  const [input, setInput] = useState(value.toString()); //used to process value which is not object
+
+  let tempArray: { [propName: string]: any } = []; //used to process object value
+
+  tempArray.push(value);
 
   const handleClick = () => {
-    fun(input);
+    fun(convertValue(value, input));
+  };
+
+  const handleClickObject = (input: { [propName: string]: any }) => {
+    fun(convertValue(value, input));
   };
 
   const onChange = (e: any) => {
     setInput(e.target.value);
   };
+
   return (
     <div>
-      <div>
-        {keys !== null && <span> {keys}:</span>}
-        <Input style={{ marginTop: "2%" }} value={input} onChange={onChange} />
-      </div>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <div style={{ marginTop: "10%" }}>
-          <Button
-            type="primary"
-            onClick={handleClick}
-            block={true}
-            shape="round"
-            disabled={input == ""}
-          >
-            OK
-          </Button>
+      {typeof value !== "object" && (
+        <div>
+          <div>
+            {keys !== null && <span> {keys}:</span>}
+            <Input
+              style={{ marginTop: "2%" }}
+              value={input}
+              onChange={onChange}
+            />
+          </div>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <div style={{ marginTop: "10%" }}>
+              <Button
+                type="primary"
+                onClick={handleClick}
+                block={true}
+                shape="round"
+                disabled={!judgeValue(input, value)}
+              >
+                OK
+              </Button>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
+      {typeof value === "object" && (
+        <AddMenu preNode={tempArray} fun={handleClickObject} />
+      )}
     </div>
   );
 };
@@ -54,10 +74,10 @@ export const AddMenu: React.FC<AddMenuProp> = ({ preNode, fun }) => {
   const [message, setMessage] = useState(""); //error message
   let tempValue: { [propName: string]: any } = {};
 
-  const [returnValue1, setReturnValue1] = useState({});//storage user input object
+  const [returnValue1, setReturnValue1] = useState({}); //storage user input object
   const [returnValue2, setReturnValue2] = useState(""); //storage user input string
 
-  const obj = preNode[0];  //we want to get key
+  const obj = preNode[0]; //we want to get key
 
   //user press ok to close error message dialog
   const handleOK = () => {
@@ -80,13 +100,13 @@ export const AddMenu: React.FC<AddMenuProp> = ({ preNode, fun }) => {
     //first we will check the user input
     if (typeof obj === "object") {
       if (judgeValue(returnValue1, obj) === false) {
-        setMessage("Each key must have value");
+        setMessage("Each key must have value or value is not correct.");
         setVisible(true);
         return;
       }
     } else {
       if (judgeValue(returnValue2, obj) === false) {
-        setMessage("You must enter a value");
+        setMessage("You must enter a value or value is not correct");
         setVisible(true);
         return;
       }
@@ -94,9 +114,9 @@ export const AddMenu: React.FC<AddMenuProp> = ({ preNode, fun }) => {
 
     //call callback function and return
     if (typeof obj === "object") {
-      fun(returnValue1);
+      fun(convertValue(obj, returnValue1));
     } else {
-      fun(returnValue2);
+      fun(convertValue(obj, returnValue2));
     }
   };
 
