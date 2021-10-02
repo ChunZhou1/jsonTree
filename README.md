@@ -72,6 +72,22 @@ The test coverage is not 100%. I used mock http server to response the fixed JSO
 # What will I do in the future: #
 
 The first thing I will do is improving the rendering efficiency of the tree. I want to use React.memo to render the component, and I have almost done it. But there are some bugs in the program, and I will complete it if I have time. The React will render the tree only if the props of the component are changed. The code is as follows:
+```
+import { useState, useEffect,memo } from "react";
+
+function comFun(
+  nextProp: Readonly<React.PropsWithChildren<Nodes>>,
+  preProp: Readonly<React.PropsWithChildren<Nodes>>
+) {
+  //current node. converted to string to compare
+  return preProp.NodeStr === nextProp.NodeStr;
+}
+
+const JsonTree_p = memo(JsonTree, comFun);
+
+
+
+```
 
 
 
