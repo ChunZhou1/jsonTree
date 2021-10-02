@@ -21,7 +21,7 @@ the price value is not contained in the array, so I think the **"price"** key on
 
 ```About edit, delete, add node:You can place the mouse on the leaf node on the tree and right click on it. The popup menu will show up. ```
 
-```For boolean variables(EX: optedin) ,You must input "true" or "false", otherwise the error will show up or OK button will be disabled.```
+```For boolean variables(EX: optedin), You must input "true" or "false", otherwise the error will show up or OK button will be disabled.```
 
 Additionally, You can not delete all the nodes under the parent node. Because if you do that, I can not add a node under this parent node as I do not know the
 key name.
