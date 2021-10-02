@@ -88,6 +88,41 @@ const JsonTree_p = memo(JsonTree, comFun);
 
 
 ```
+The next thing I will do is storing JSON files to the local storage automatically. Suppose many of the other components will use the JSON. I will use Redux to store JSON data. The persist-redux can store the redux data to the local storage automatically. I have used it in another object. The code is as follows.
+```
+import { persistStore, persistReducer } from "redux-persist";
+import storageSession from "redux-persist/lib/storage/session";
+import storage from "redux-persist/lib/storage";
+import { PersistGate } from "redux-persist/lib/integration/react";
+
+const storageConfig = {
+  key: "root", 
+  storage: storage, 
+  blacklist: [], 
+};
+
+
+const myPersistReducer = persistReducer(storageConfig, Reducer);
+export const store = createStore(myPersistReducer);
+export const persistor = persistStore(store);
+
+function App() {
+  return (
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <Router history={history}>
+          <div style={sectionStyle}>
+            <Main />
+          </div>
+        </Router>
+      </PersistGate>
+    </Provider>
+  );
+}
+
+```
+
+Finally, I will store the JSON data in the database(MySQL or web database). I think it is not difficult to do this.
 
 
 
