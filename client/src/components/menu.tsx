@@ -36,6 +36,7 @@ export const ModifyMenu: React.FC<ModifyMenuProp> = ({ keys, value, fun }) => {
           <div>
             {keys !== null && <span> {keys}:</span>}
             <Input
+              data-id={keys}
               style={{ marginTop: "2%" }}
               value={input}
               onChange={onChange}
@@ -44,6 +45,7 @@ export const ModifyMenu: React.FC<ModifyMenuProp> = ({ keys, value, fun }) => {
           <div style={{ display: "flex", justifyContent: "center" }}>
             <div style={{ marginTop: "10%" }}>
               <Button
+                data-id={"ok1"}
                 type="primary"
                 onClick={handleClick}
                 block={true}
@@ -139,6 +141,7 @@ export const AddMenu: React.FC<AddMenuProp> = ({ preNode, fun }) => {
       <div style={{ display: "flex", justifyContent: "center" }}>
         <div style={{ marginTop: "10%" }}>
           <Button
+            data-id={"ok2"}
             type="primary"
             onClick={handleClick}
             block={true}

@@ -21,7 +21,7 @@ export const SubNode: React.FC<SubNodesProp> = ({
     handleClick(str);
   };
   return (
-    <div>
+    <div data-id={str}>
       <span
         style={{ color: visible ? "red" : "#5377a6", fontWeight: 700 }}
         onClick={onClick}
@@ -120,9 +120,13 @@ export const LeafNode: React.FC<LeafNodeProp> = ({
       <Dropdown overlay={menu} trigger={["contextMenu"]}>
         <div style={{ marginBottom: "5px" }}>
           {keys !== null && (
-            <span style={{ fontWeight: 700 }}>{keys}:&nbsp;&nbsp;</span>
+            <span data-id={keys} style={{ fontWeight: 700 }}>
+              {keys}:&nbsp;&nbsp;
+            </span>
           )}
-          <span style={{ color: "blue" }}>{objToString(value)}</span>
+          <span data-id={objToString(value)} style={{ color: "blue" }}>
+            {objToString(value)}
+          </span>
         </div>
       </Dropdown>
       <Modal

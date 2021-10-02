@@ -61,11 +61,12 @@ function findStr(obj: string) {
 }
 
 const JsonTree: React.FC<Nodes> = ({ node, handleReflash, preNode }) => {
+  let element = [];
+  let temp;
   //If we want to display sub tree(expand/Collapse), the element which be put into the array should be display
   const [display, setDisplay] = useState([]);
-
+  const [count, setCount] = useState(0); //used to rendering the current node
   const [visible, setVisible] = useState(false); //if display error message;
-  const [count, setCount] = useState(0);
 
   //close error message dialog
   const handleOK = () => {
@@ -74,7 +75,6 @@ const JsonTree: React.FC<Nodes> = ({ node, handleReflash, preNode }) => {
 
   const handleCollapse = (str: string) => {
     //switch between expand and Collapse,it will be displayed when add subNode name to the array. str=subNode name
-
     let tempArr = display.slice(0);
     let index = display.findIndex(findStr, str);
     if (index === -1) {
@@ -98,114 +98,97 @@ const JsonTree: React.FC<Nodes> = ({ node, handleReflash, preNode }) => {
       if (result === false) {
         //display error message
         setVisible(true);
-        return;
+      } else {
+        //we need to rendering whole tree
+        handleReflash();
       }
     } else {
       if (type === "modify") {
         processAfterFind(preNode, node, key, newValue, "modify");
 
-        if (typeof node === "object") {
+        if (typeof node !== "object") {
+          handleReflash();
+        } else {
+          //we do not need to rendering whole tree
           setCount(count + 1);
-          return;
         }
       } else {
         if (type === "add") {
-          console.log("begin to add");
           processAfterFind(preNode, node, key, newValue, "add");
+          handleReflash();
         }
       }
     }
-
-    handleReflash();
-  };
-
-  //The function used to rendering tree
-  const render_node = (
-    node: Nodes["node"],
-    preNode: Nodes["node"],
-    handleCallBack1: Function,
-    handleCollapse: Function
-  ) => {
-    let element = [];
-    let temp;
-    let visible_element;
-
-    if (typeof node !== "object") {
-      temp = (
-        <LeafNode
-          preNode={preNode}
-          key={node}
-          keys={null}
-          value={node}
-          callBackFun={handleCallBack1}
-        />
-      );
-      element.push(temp);
-    } else {
-      //The node is object,next we will judge if it contain the array of child node
-      for (let key in node) {
-        if (Array.isArray(node[key]) === false) {
-          //we will display directly
-          const temp = (
-            <LeafNode
-              preNode={preNode}
-              key={key}
-              keys={key}
-              value={node[key]}
-              callBackFun={handleCallBack1}
-            />
-          );
-          element.push(temp);
-        } else {
-          visible_element =
-            display.findIndex(findStr, key) === -1 ? false : true;
-
-          let tempArray: { [propName: string]: any } = node[key];
-
-          //display array
-          const subTree = tempArray.map((item: any) => {
-            return (
-              <JsonTree
-                node={item}
-                handleReflash={handleReflash}
-                preNode={tempArray}
-              />
-            );
-          });
-
-          //display sub node
-
-          const temp = (
-            <div style={{ marginBottom: "5px" }} key={key}>
-              <SubNode
-                str={key}
-                handleClick={handleCollapse}
-                visible={visible_element}
-              />
-
-              {visible_element && (
-                <div style={{ marginLeft: "5%" }}>{subTree}</div>
-              )}
-            </div>
-          );
-          element.push(temp);
-        }
-      }
-    }
-    return element;
   };
 
   //The code below is used to display tree
+  if (typeof node !== "object") {
+    temp = (
+      <LeafNode
+        preNode={preNode}
+        key={node}
+        keys={null}
+        value={node}
+        callBackFun={handleCallBack1}
+      />
+    );
+    element.push(temp);
+  } else {
+    //The node is object,next we will judge if it contain the array of child node
+    for (let key in node) {
+      if (Array.isArray(node[key]) === false) {
+        //we will display directly
+        const temp = (
+          <LeafNode
+            preNode={preNode}
+            key={key}
+            keys={key}
+            value={node[key]}
+            callBackFun={handleCallBack1}
+          />
+        );
+        element.push(temp);
+      } else {
+        //The node contain the array of child node, we will display subNode
+        let visible; //expand or Collapse
 
-  const element_r = useMemo(() => {
-    console.log("enter,enter");
-    return render_node(node, preNode, handleCallBack1, handleCollapse);
-  }, [JSON.stringify(preNode), display]);
+        //judge if we should display sub tree(Collapse/expand)
+        if (display.findIndex(findStr, key) === -1) {
+          visible = false;
+        } else {
+          visible = true;
+        }
+
+        let tempArray: { [propName: string]: any } = node[key];
+
+        //display array
+        const subTree = tempArray.map((item: any) => {
+          return (
+            <JsonTree
+              node={item}
+              handleReflash={handleReflash}
+              preNode={tempArray}
+            />
+          );
+        });
+
+        //display sub node according to var visible
+        const temp = (
+          <div style={{ marginBottom: "5px" }} key={key}>
+            <SubNode str={key} handleClick={handleCollapse} visible={visible} />
+
+            {visible && <div style={{ marginLeft: "10%" }}>{subTree}</div>}
+          </div>
+        );
+        element.push(temp);
+      }
+    }
+  }
 
   return (
     <div>
-      {element_r != [] && (
-        <div style={{ marginBottom: "5%", width: "100%" }}>{element_r}</div>
+      {element != [] && (
+        <div style={{ marginBottom: "5%", width: "50%" }}>{element}</div>
       )}
       <Modal
         title="Sorry"

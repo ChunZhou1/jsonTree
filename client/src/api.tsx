@@ -99,6 +99,7 @@ const deleteLeafNode = (
     }
   } else {
     preNode[key] = null;
+    node = null;
   }
   return true;
 };
@@ -195,7 +196,7 @@ const assignValue = (oldValue: any, newValue: any) => {
   return result;
 };
 
-//onvert string obj to orginal obj
+//onvert string obj to original obj
 export const convertValue = (oldObj: any, newObj: any) => {
   if (typeof newObj !== "object") {
     return assignValue(oldObj, newObj);

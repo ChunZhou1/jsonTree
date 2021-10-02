@@ -1,0 +1,6 @@
+{
+  "baseUrl": "http://127.0.0.1:8080",
+  "ignoreTestFiles": "**/examples/*",
+  "viewportHeight": 1080,
+  "viewportWidth": 1920
+}
