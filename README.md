@@ -64,7 +64,7 @@ The **JsonTree** component has three parameters:
 Because Each component has props of current node and parent node. It is easy to operate the node(such as add, delete node) without 
 query operation(such as recursive query)
 
-# About automatic testing#:
+# About automatic testing: # 
 
 I created the automative testing issues under the “**Cypress/integration**” directory. The automative test includes showing, add, delete and edit testing.
 The test coverage is not 100%. I used mock http server to response the fixed JSON data in order to test.
