@@ -15,13 +15,14 @@
 
 # Summary of the assignment
 
-The software is used to display and operate the JSON tree, You can edit, delete, add the node of the JSON tree.
-But not all the node of tree can be added and deleted. For example, **"price"** key can only be edited, Because 
+The software is used to display and operate the JSON tree, You can edit, delete, add the node on the JSON tree.
+But not all the node on the tree can be added and deleted. For example, **"price"** key can only be edited, Because 
 the price value is not contained in the array, so I think the **"price"** key only has one value.
 
 **How to edit, delete, add node**
+You can place the mouse on the **leaf node** on the tree and right click the mouse. The popup menu will be displayed.
 
-You can place the mouse on the **leaf node** of the node and reght click the moude. The popup menu will be displayed.
+
 
 
 
