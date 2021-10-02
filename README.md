@@ -35,7 +35,7 @@ The software includes files as follows:
 
 3: **node.TSX** :under **“component”** directory.
 
-The file contains the component used to display the leaf node (**LeafNode**) and the Parent node of the leaf node.
+The file contains the component used to display the leaf node (**LeafNode**) and the Parent node of the leaf node
 (**SubNode**). The two types of components are called by (**JsonTree**) component.
 
 4: **menu.TSX** under “**component**” directory.
