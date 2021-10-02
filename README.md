@@ -34,8 +34,19 @@ The software includes files as follows:
 2:  **api.TSX:** under the **"client"** directory. The file contains all the API functions which are used by other files. The file includes ajax function, node operation functions and data validation functions.
 
 3: **node.TSX** :under **“component”** directory.
+
 The file contains the component used to display the leaf node (**LeafNode**) and the Parent node of the leaf node.
 (**SubNode**). The two types of components are called by (**JsonTree**) component.
+
+4: **menu.TSX** under “**component**” directory.
+
+The file contains the component used to display the popup menu and input dialog. The user uses these menus and dialogs
+to input the parameter of the node. 
+
+(**ModifyMenu**): used to input the parameter of the edit menu.
+(**AddMenu**): used to input the parameter of the add menu.
+
+The two components above are called by (**LeafNode**)
 
 
 
