@@ -19,8 +19,7 @@ The software is used to display and operate on the JSON tree, You can edit, dele
 But not all the node on the tree can be added and deleted. For example, **"price"** key can only be edited, Because 
 the price value is not contained in the array, so I think the **"price"** key only has one value.
 
-**About edit, delete, add node**:
-You can place the mouse on the **leaf node** on the tree and right click on it. The popup menu will show up.
+```About edit, delete, add node:You can place the mouse on the **leaf node** on the tree and right click on it. The popup menu will show up. ```
 
 Additionally, You can not delete all the nodes under the parent node. Because if you do that, I can not add a node under this parent node as I do not know the
 key name.
