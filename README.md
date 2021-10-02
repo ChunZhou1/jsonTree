@@ -1,28 +1,28 @@
 # JSON Tree Display
 # How to run the program:
 
-1: Open the Terminal under the **Client** directory.
+1: Open the terminal under the **Client** directory.
 
-2: **npm install**
+2: ```npm install```
 
-3: **npm start**
+3: ```npm start```
 
 # How to run automatic testing:
 
-1: Open the Terminal under the **Client** directory.
+1: Open the terminal under the **Client** directory.
 
-2: **npx cypress open**
+2: ```npx cypress open```
 
 # Summary of the assignment
 
-The software is used to display and operate the JSON tree, You can edit, delete, add the node on the JSON tree.
+The software is used to display and operate on the JSON tree, You can edit, delete, add nodes to the JSON tree.
 But not all the node on the tree can be added and deleted. For example, **"price"** key can only be edited, Because 
 the price value is not contained in the array, so I think the **"price"** key only has one value.
 
 **About edit, delete, add node**:
-You can place the mouse on the **leaf node** on the tree and right click. The popup menu will show up.
+You can place the mouse on the **leaf node** on the tree and right click on it. The popup menu will show up.
 
-Additionally, You can not delete all nodes under the parent node. Because if you do that, I can not add a node under this parent node as I do not know the
+Additionally, You can not delete all the nodes under the parent node. Because if you do that, I can not add a node under this parent node as I do not know the
 key name.
 
 # software structure: #
@@ -50,7 +50,7 @@ The two components above are called by (**LeafNode**)
 
 # Software algorithm #
 
-The software uses a recursive component algorithm to display the whole JSON tree. The entire tree consists of many subtrees.
+The software uses a recursive algorithm to display the whole JSON tree. The entire tree consists of many subtrees.
 Each Jsontree component is a subtree.
 
 The **JsonTree** component has three parameters:
@@ -71,7 +71,7 @@ I used a mock http server to return fixed JSON data to facilitate test.
 
 # What will I do in the future to improve the program: #
 
-The first thing I will do is improving the rendering efficiency of the tree. I want to use React.memo to render the component, and I have almost done it, but there are some bugs in the program, and I will complete it if I have time. The React will render the tree only if the props of the component are changed. The code is as follows:
+The first thing I will do is improving the rendering efficiency of the tree. I want to use React.memo to render the component, and I will complete it if I have time. The React will render the tree only if the props of the component are changed. The code is as follows:
 ```
 import { useState, useEffect,memo } from "react";
 
