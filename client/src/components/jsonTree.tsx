@@ -89,33 +89,30 @@ const JsonTree: React.FC<Nodes> = ({ node, handleReflash, preNode }) => {
     newValue: any,
     type: string
   ) => {
-    if (type === DELETE) {
-      let result = processAfterFind(preNode, node, key, null, DELETE);
+    switch (type) {
+      case DELETE:
+        let result = processAfterFind(preNode, node, key, null, DELETE);
+        if (result === false) {
+          //display error message
+          setVisible(true);
+          return;
+        }
+        break;
 
-      if (result === false) {
-        //display error message
-        setVisible(true);
-      } else {
-        //we need to rendering whole tree
-        handleReflash();
-      }
-    } else {
-      if (type === MODIFY) {
+      case ADD:
+        processAfterFind(preNode, node, key, newValue, ADD);
+        break;
+
+      case MODIFY:
         processAfterFind(preNode, node, key, newValue, MODIFY);
-
-        if (typeof node !== "object") {
-          handleReflash();
-        } else {
-          //we do not need to rendering whole tree
+        if (typeof node === "object") {
+          //we do not need to render whole tree
           setCount(count + 1);
+          return;
         }
-      } else {
-        if (type === ADD) {
-          processAfterFind(preNode, node, key, newValue, ADD);
-          handleReflash();
-        }
-      }
+        break;
     }
+    handleReflash();
   };
 
   //The code below is used to display tree

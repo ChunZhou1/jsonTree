@@ -78,7 +78,6 @@ interface AddMenuProp {
 export const AddMenu: React.FC<AddMenuProp> = ({ preNode, fun }) => {
   const [visible, setVisible] = useState(false); //if display error message
   const [message, setMessage] = useState(""); //error message
-  let tempValue: { [propName: string]: any } = {};
 
   const [returnValue1, setReturnValue1] = useState({}); //storage user input object
   const [returnValue2, setReturnValue2] = useState(""); //storage user input string
@@ -92,6 +91,7 @@ export const AddMenu: React.FC<AddMenuProp> = ({ preNode, fun }) => {
 
   //change the input value when user input text
   const handleInput = (keys: string, value: string) => {
+    let tempValue: { [propName: string]: any } = {};
     if (typeof obj === "object") {
       tempValue = { ...returnValue1 };
       tempValue[keys] = value;
