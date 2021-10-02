@@ -66,7 +66,7 @@ query operation(such as recursive query)
 
 # About automatic testing: # 
 
-I created the automative testing issues under the “**Cypress/integration**” directory. The automative test includes showing, add, delete and edit testing.
+I created the automative testing issues under the “**Cypress/integration**” directory. The automative test includes show, add, delete and edit testing.
 The test coverage is not 100%. I used mock http server to response the fixed JSON data in order to test.
 
 
