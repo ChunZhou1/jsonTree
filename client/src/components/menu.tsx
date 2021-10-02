@@ -1,15 +1,15 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Input, Button, Modal } from "antd";
 import { string } from "prop-types";
-import { judgeValue, convertValue, validateValue } from "../api";
+import { judgeValue, convertValue } from "../api";
 
 interface ModifyMenuProp {
   keys: string;
   value: any;
   fun: Function;
 }
-////////////////////////edit dialog//////////////////////////
+////////////////////////edit node dialog//////////////////////////
 export const ModifyMenu: React.FC<ModifyMenuProp> = ({ keys, value, fun }) => {
   const [input, setInput] = useState(value.toString()); //used to process value which is not object
 
@@ -17,11 +17,14 @@ export const ModifyMenu: React.FC<ModifyMenuProp> = ({ keys, value, fun }) => {
 
   tempArray.push(value);
 
+  //user click OK btn and we will upload data to parent component
   const handleClick = () => {
+    //the data is not object
     fun(convertValue(value, input));
   };
 
   const handleClickObject = (input: { [propName: string]: any }) => {
+    //the data is object
     fun(convertValue(value, input));
   };
 
@@ -29,6 +32,7 @@ export const ModifyMenu: React.FC<ModifyMenuProp> = ({ keys, value, fun }) => {
     setInput(e.target.value);
   };
 
+  //note! if the data is object,we will call AddMenu to display data(EX:price)
   return (
     <div>
       {typeof value !== "object" && (
@@ -65,7 +69,7 @@ export const ModifyMenu: React.FC<ModifyMenuProp> = ({ keys, value, fun }) => {
   );
 };
 
-//////////////////////////add dialog////////////////////////////
+//////////////////////////add node dialog////////////////////////////
 interface AddMenuProp {
   preNode: { [propName: string]: any[] };
   fun: Function;
@@ -79,7 +83,7 @@ export const AddMenu: React.FC<AddMenuProp> = ({ preNode, fun }) => {
   const [returnValue1, setReturnValue1] = useState({}); //storage user input object
   const [returnValue2, setReturnValue2] = useState(""); //storage user input string
 
-  const obj = preNode[0]; //we want to get key
+  const obj = preNode[0]; //we want to get key to diaplay
 
   //user press ok to close error message dialog
   const handleOK = () => {
@@ -97,7 +101,7 @@ export const AddMenu: React.FC<AddMenuProp> = ({ preNode, fun }) => {
     }
   };
 
-  //If user press OK button
+  //user press OK button,we will upload data to parent component,but before upload,we should do sth
   const handleClick = () => {
     //first we will check the user input
     if (typeof obj === "object") {
@@ -174,7 +178,7 @@ interface KeyValueProp {
   keys: string;
   fun: Function;
 }
-////////////////////////////////////////key value pairs
+//////////////////////////////////display key&value pairs////////////////
 const KeyValue: React.FC<KeyValueProp> = ({ keys, fun }) => {
   const [input, setInput] = useState("");
 

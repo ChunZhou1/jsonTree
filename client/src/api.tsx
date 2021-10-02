@@ -1,4 +1,6 @@
-import { Nodes } from "./components/jsonTree";
+export const DELETE = "delete";
+export const ADD = "add";
+export const MODIFY = "modify";
 
 interface JsonObj {
   obj: {
@@ -6,6 +8,7 @@ interface JsonObj {
   };
 }
 
+//ajax request
 const getRequest = (url: string) => {
   return window
     .fetch(url, {
@@ -53,7 +56,7 @@ export interface Nodes1 {
   };
 }
 
-//process node function
+//function used to process node
 
 export const processAfterFind = (
   preNode: Nodes1["node1"],
@@ -62,7 +65,7 @@ export const processAfterFind = (
   newValue: any,
   type: string
 ) => {
-  if (type === "delete") {
+  if (type === DELETE) {
     if (preNode.toString() === node.toString()) {
       console.log("can not delete");
       return false;
@@ -72,11 +75,11 @@ export const processAfterFind = (
     }
   }
 
-  if (type === "modify") {
+  if (type === MODIFY) {
     return modifyNode(preNode, node, key, newValue);
   }
 
-  if (type === "add") {
+  if (type === ADD) {
     return addNode(preNode, newValue);
   }
 
@@ -170,7 +173,7 @@ export const judgeValue = (
   return true;
 };
 
-// convert string value to orginal value
+// convert string value to original value
 const assignValue = (oldValue: any, newValue: any) => {
   let result: any;
   switch (typeof oldValue) {
@@ -179,7 +182,6 @@ const assignValue = (oldValue: any, newValue: any) => {
       break;
 
     case "boolean":
-      console.log("boolean");
       if (newValue === "true") {
         result = true;
       } else {
@@ -196,7 +198,7 @@ const assignValue = (oldValue: any, newValue: any) => {
   return result;
 };
 
-//onvert string obj to original obj
+//convert string obj to original obj
 export const convertValue = (oldObj: any, newObj: any) => {
   if (typeof newObj !== "object") {
     return assignValue(oldObj, newObj);

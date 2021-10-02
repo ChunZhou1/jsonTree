@@ -1,16 +1,13 @@
 import * as React from "react";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 
 import getRequest from "../api";
 
-import { processAfterFind } from "../api";
+import { processAfterFind, DELETE, ADD, MODIFY } from "../api";
 
 import { Modal } from "antd";
 
 import { SubNode, LeafNode } from "./node";
-
-//test data
-import { data1, data2 } from "../mock_data";
 
 const URL = "https://bs-random-json.vercel.app/api/data ";
 
@@ -26,13 +23,13 @@ export interface Nodes {
 }
 
 const JsonTree_container = () => {
-  const [data, setData] = useState<Nodes["node"]>({});
+  const [data, setData] = useState<Nodes["node"]>({}); //ajax data
   //used to reflash
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(0); //used to rendering
 
   useEffect(() => {
     getRequest(URL).then((result) => {
-      console.log(result);
+      //console.log(result);
 
       setData(result);
     });
@@ -63,7 +60,7 @@ function findStr(obj: string) {
 const JsonTree: React.FC<Nodes> = ({ node, handleReflash, preNode }) => {
   let element = [];
   let temp;
-  //If we want to display sub tree(expand/Collapse), the element which be put into the array should be display
+  //If we want to display sub tree(expand/Collapse), the element which be put into the array should be displayed
   const [display, setDisplay] = useState([]);
   const [count, setCount] = useState(0); //used to rendering the current node
   const [visible, setVisible] = useState(false); //if display error message;
@@ -92,8 +89,8 @@ const JsonTree: React.FC<Nodes> = ({ node, handleReflash, preNode }) => {
     newValue: any,
     type: string
   ) => {
-    if (type === "delete") {
-      let result = processAfterFind(preNode, node, key, null, "delete");
+    if (type === DELETE) {
+      let result = processAfterFind(preNode, node, key, null, DELETE);
 
       if (result === false) {
         //display error message
@@ -103,8 +100,8 @@ const JsonTree: React.FC<Nodes> = ({ node, handleReflash, preNode }) => {
         handleReflash();
       }
     } else {
-      if (type === "modify") {
-        processAfterFind(preNode, node, key, newValue, "modify");
+      if (type === MODIFY) {
+        processAfterFind(preNode, node, key, newValue, MODIFY);
 
         if (typeof node !== "object") {
           handleReflash();
@@ -113,8 +110,8 @@ const JsonTree: React.FC<Nodes> = ({ node, handleReflash, preNode }) => {
           setCount(count + 1);
         }
       } else {
-        if (type === "add") {
-          processAfterFind(preNode, node, key, newValue, "add");
+        if (type === ADD) {
+          processAfterFind(preNode, node, key, newValue, ADD);
           handleReflash();
         }
       }
@@ -172,7 +169,7 @@ const JsonTree: React.FC<Nodes> = ({ node, handleReflash, preNode }) => {
           );
         });
 
-        //display sub node according to var visible
+        //display sub node according to value of visible
         const temp = (
           <div style={{ marginBottom: "5px" }} key={key}>
             <SubNode str={key} handleClick={handleCollapse} visible={visible} />

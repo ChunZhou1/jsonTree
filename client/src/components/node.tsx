@@ -1,8 +1,8 @@
 import * as React from "react";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect} from "react";
 import { Menu, Dropdown, Modal } from "antd";
 import { ModifyMenu, AddMenu } from "./menu";
-import { objToString } from "../api";
+import { objToString, DELETE, ADD, MODIFY } from "../api";
 import { RightOutlined, DownOutlined } from "@ant-design/icons";
 
 //The SubNode //////////
@@ -12,8 +12,9 @@ interface SubNodesProp {
   visible?: boolean;
 }
 
+//SubNode which contain sub tree
 export const SubNode: React.FC<SubNodesProp> = ({
-  str,
+  str, //sub node name
   handleClick,
   visible,
 }) => {
@@ -45,7 +46,7 @@ interface LeafNodeProp {
 //The LeafNode///////////////////////////////////
 
 export const LeafNode: React.FC<LeafNodeProp> = ({
-  preNode,
+  preNode, //parent node
   keys,
   value,
   callBackFun,
@@ -67,7 +68,7 @@ export const LeafNode: React.FC<LeafNodeProp> = ({
   const onClick = (e: any) => {
     switch (e.key) {
       case "DELETE":
-        callBackFun(keys, value, null, "delete");
+        callBackFun(keys, value, null, DELETE);
         break;
 
       case "MODIFY":
@@ -95,13 +96,13 @@ export const LeafNode: React.FC<LeafNodeProp> = ({
   //user close dialog and want to modify
 
   const callBackModify = (input: any) => {
-    callBackFun(keys, value, input, "modify");
+    callBackFun(keys, value, input, MODIFY);
     setVisible(false);
   };
 
   //user close dialog and want to add
   const callBackAdd = (input: any) => {
-    callBackFun(keys, value, input, "add");
+    callBackFun(keys, value, input, ADD);
     setVisible(false);
   };
 
