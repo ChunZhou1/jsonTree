@@ -31,7 +31,11 @@ The software includes files as follows:
 
 1: **jsonTree.TSX:** main file, under **“components”** directory.he file contains the JsonTree component, which displays the whole JSON tree and operates node.
 
-2:  **api.TSX:** under the **"client"** directory. The file contains all the API functions which are used by other files. The file includes ajax function, Node operation functions and data validation functions.
+2:  **api.TSX:** under the **"client"** directory. The file contains all the API functions which are used by other files. The file includes ajax function, node operation functions and data validation functions.
+
+3: **node.jsx** :under **“component”** directory.
+The file contains the component used to display the leaf node (**LeafNode**) and the Parent node of the leaf node.
+(**SubNode**). The two types of components are called by (**JsonTree**) component.
 
 
 
