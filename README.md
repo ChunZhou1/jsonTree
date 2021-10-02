@@ -48,5 +48,21 @@ to input the parameter of the node.
 
 The two components above are called by (**LeafNode**)
 
+# Software algorithm #
+
+The software uses a recursive component algorithm to display the whole JSON tree. The entire tree consists of many subtrees.
+Each Jsontree component is a subtree.
+
+The **JsonTree** component has three parameters:
+
+**node**: current node of the trees.
+
+**preNode** : the parent node of the current node.
+
+**handleReflash**: callBack function, used to Refresh the whole tree.
+
+Because Each component has props of current node and parent node. It is easy to operate the node(such as add, delete node) without 
+query operation(such as recursive query)
+
 
 
