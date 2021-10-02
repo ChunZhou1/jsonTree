@@ -124,5 +124,7 @@ function App() {
 
 Finally, I will store the JSON data in the database(MySQL or web database). I think it is not difficult to do this.
 
+![image](https://github.com/lexsaints/powershell/blob/master/IMG/ps2.png)
+
 
 
