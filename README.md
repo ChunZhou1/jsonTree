@@ -1,5 +1,5 @@
 # JSON Tree Display
-# running instructions:
+# How to run the program:
 
 1: Open the Terminal under the **Client** directory.
 
@@ -7,7 +7,7 @@
 
 3: **npm start**
 
-# running automatic testing:
+# How to run automatic testing:
 
 1: Open the Terminal under the **Client** directory.
 
@@ -20,22 +20,22 @@ But not all the node on the tree can be added and deleted. For example, **"price
 the price value is not contained in the array, so I think the **"price"** key only has one value.
 
 **About edit, delete, add node**:
-You can place the mouse on the **leaf node** on the tree and right click the mouse. The popup menu will display.
+You can place the mouse on the **leaf node** on the tree and right click. The popup menu will show up.
 
-Additionally, You can not delete all nodes under the parent node. Because if you do do, I can not add a node under this parent node as I do not know the
+Additionally, You can not delete all nodes under the parent node. Because if you do that, I can not add a node under this parent node as I do not know the
 key name.
 
 # software structure: #
 
 The software includes files as follows:
 
-1: **jsonTree.TSX:** main file, under **“components”** directory.The file contains the JsonTree component, which displays the whole JSON tree and operates node.
+1: **jsonTree.TSX:** main file, under **“components”** directory.The file contains the JsonTree component, which displays the whole JSON tree and manipulates node.
 
-2:  **api.TSX:** under the **"client"** directory. The file contains all the API functions which are used by other files. The file includes ajax function, node operation functions and data validation functions.
+2:  **api.TSX:** under the **"client"** directory. The file contains all the API functions which are used by other files. The file includes ajax functions, functions to manipulate nodes, and data validation functions.
 
 3: **node.TSX** :under **“component”** directory.
 
-The file contains the component used to display the leaf node (**LeafNode**) and the Parent node of the leaf node
+The file contains the components used to display the leaf node (**LeafNode**) and the parent node of the leaf node
 (**SubNode**). The two types of components are called by (**JsonTree**) component.
 
 4: **menu.TSX** under “**component**” directory.
@@ -59,19 +59,19 @@ The **JsonTree** component has three parameters:
 
 **preNode** : the parent node of the current node.
 
-**handleReflash**: callBack function, used to Refresh the whole tree.
+**handleReflash**: callBack function, used to refresh the whole tree.
 
-Because Each component has props of current node and parent node. It is easy to operate the node(such as add, delete node) without 
-query operation(such as recursive query)
+Since each component has props of the current node and the parent node, it is easy to operate on the node(such as add, delete node) without 
+query operations(such as recursive query)
 
 # About automatic testing: # 
 
-I created the automative testing issues under the “**Cypress/integration**” directory. The automative test includes show, add, delete and edit testing.
-The test coverage is not 100%. I used mock http server to response the fixed JSON data in order to test.
+I created the automative testing script under the “**Cypress/integration**” directory. The automative test includes show, add, delete and edit testing.
+I used a mock http server to return fixed JSON data to facilitate test.
 
-# What will I do in the future: #
+# What will I do in the future to improve the program: #
 
-The first thing I will do is improving the rendering efficiency of the tree. I want to use React.memo to render the component, and I have almost done it. But there are some bugs in the program, and I will complete it if I have time. The React will render the tree only if the props of the component are changed. The code is as follows:
+The first thing I will do is improving the rendering efficiency of the tree. I want to use React.memo to render the component, and I have almost done it, but there are some bugs in the program, and I will complete it if I have time. The React will render the tree only if the props of the component are changed. The code is as follows:
 ```
 import { useState, useEffect,memo } from "react";
 
@@ -88,7 +88,7 @@ const JsonTree_p = memo(JsonTree, comFun);
 
 
 ```
-The next thing I will do is storing JSON files to the local storage automatically. Suppose many of the other components will use the JSON. I will use Redux to store JSON data. The persist-redux can store the redux data to the local storage automatically. I have used it in another object. The code is as follows.
+The next thing I will do is storing JSON files to the local storage automatically since many of the other components might also use the JSON data. I will use Redux to store JSON data. The persist-redux can store the redux data to the local storage automatically. I have used it in another object. The code is as follows.
 ```
 import { persistStore, persistReducer } from "redux-persist";
 import storageSession from "redux-persist/lib/storage/session";
@@ -122,7 +122,7 @@ function App() {
 
 ```
 
-Finally, I will store the JSON data in the database(MySQL or web database). I think it is not difficult to do this.
+Finally, I will store the JSON data in the database(MySQL or web database).
 
 ![image](https://github.com/ChunZhou1/jsonTree/blob/master/client/component_relationship.png)
 
