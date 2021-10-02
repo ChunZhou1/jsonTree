@@ -69,5 +69,9 @@ query operation(such as recursive query)
 I created the automative testing issues under the “**Cypress/integration**” directory. The automative test includes show, add, delete and edit testing.
 The test coverage is not 100%. I used mock http server to response the fixed JSON data in order to test.
 
+# What will I do in the future: #
+
+The first thing I will do is improving the rendering efficiency of the tree. I want to use React.memo to render the component, and I have almost done it. But there are some bugs in the program, and I will complete it if I have time. The React will render the tree only if the props of the component are changed. The code is as follows:
+
 
 
