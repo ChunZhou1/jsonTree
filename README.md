@@ -49,6 +49,8 @@ to input the parameter of the node.
 
 The two components above are called by (**LeafNode**)
 
+![image](https://github.com/ChunZhou1/jsonTree/blob/master/client/component_relationship.png)
+
 # Software algorithm #
 
 The software uses a recursive algorithm to display the whole JSON tree. The entire tree consists of many subtrees.
@@ -130,7 +132,7 @@ function App() {
 
 Finally, I will store the JSON data in the database(MySQL or web database).
 
-![image](https://github.com/ChunZhou1/jsonTree/blob/master/client/component_relationship.png)
+
 
 
 
