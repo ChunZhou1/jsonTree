@@ -56,13 +56,15 @@ The two components above are called by (**LeafNode**)
 The software uses a recursive algorithm to display the whole JSON tree. The entire tree consists of many subtrees.
 Each Jsontree component is a subtree.
 
-The **JsonTree** component has three parameters:
+The **JsonTree** component has four parameters:
 
 **node**: current node of the trees.
 
 **preNode** : the parent node of the current node.
 
-**handleReflash**: callBack function, used to refresh the whole tree.
+**reflashFun**: callBack function, used to refresh the whole tree.
+
+**NodeStr**: this parameter is very important, React.memo use this parameter to determin if the component should be updated
 
 Since each component has props of the current node and the parent node, it is easy to operate on the node(such as add, delete node) without 
 query operations(such as recursive query)
