@@ -67,7 +67,7 @@ query operations(such as recursive query)
 
 **How to avoid over-rendering**
 
-How to avoid over-rendering is an important thing. When the user add, delete, and edit the node, First, we let each component force update, but we only want the content to be changed to update itself. So we use React.memo to do this. React.memo will compare the preview status and next status of content and determine if the component should be updated.
+When the user add, delete, and edit the node, First, we let each component force update, but we only want the content to be changed to update itself. So we use React.memo to do this. React.memo will compare the preview status and next status of content and determine if the component should be updated.
 
 Finally, we avoided over rendering.
 
