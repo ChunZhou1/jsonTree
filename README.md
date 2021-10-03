@@ -65,11 +65,27 @@ The **JsonTree** component has three parameters:
 Since each component has props of the current node and the parent node, it is easy to operate on the node(such as add, delete node) without 
 query operations(such as recursive query)
 
-**How to avoid over-rendering **
+**How to avoid over-rendering**
 
-How to avoid over-rendering is an important thing. When the user add, delete, and edit the node., First, we let each component force update, but we only want the content to be changed to update itself. So we use React.memo to do this. React.memo will compare the preview status and next status of content and determine if the component should be updated.
+How to avoid over-rendering is an important thing. When the user add, delete, and edit the node, First, we let each component force update, but we only want the content to be changed to update itself. So we use React.memo to do this. React.memo will compare the preview status and next status of content and determine if the component should be updated.
 
 Finally, we avoided over rendering.
+
+```
+import { useState, useEffect, memo } from "react";
+function comFun(
+  preProp: Readonly<React.PropsWithChildren<Nodes>>,
+  nextProp: Readonly<React.PropsWithChildren<Nodes>>
+) {
+  //if the content of component does not change,we should not update it
+
+  return preProp.NodeStr === nextProp.NodeStr;
+}
+
+/////////////Important!! used to determin if child component should update itself when parent component let it update
+
+const JsonTree_p = memo(JsonTree, comFun);
+```
 
 # About automatic testing: # 
 
@@ -78,24 +94,7 @@ I used a mock http server to return fixed JSON data to facilitate test.
 
 # What will I do in the future to improve the program: #
 
-The first thing I will do is improving the rendering efficiency of the tree. I want to use React.memo to render the component, and I will complete it if I have time. The React will render the tree only if the props of the component are changed. The code is as follows:
-```
-import { useState, useEffect,memo } from "react";
-
-function comFun(
-  nextProp: Readonly<React.PropsWithChildren<Nodes>>,
-  preProp: Readonly<React.PropsWithChildren<Nodes>>
-) {
-  //current node. converted to string to compare
-  return preProp.NodeStr === nextProp.NodeStr;
-}
-
-const JsonTree_p = memo(JsonTree, comFun);
-
-
-
-```
-The next thing I will do is storing JSON files to the local storage automatically since many of the other components might also use the JSON data. I will use Redux to store JSON data. The persist-redux can store the redux data to the local storage automatically. I have used it in another object. The code is as follows.
+The first thing I will do is storing JSON files to the local storage automatically since many of the other components might also use the JSON data. I will use Redux to store JSON data. The persist-redux can store the redux data to the local storage automatically. I have used it in another object. The code is as follows.
 ```
 import { persistStore, persistReducer } from "redux-persist";
 import storageSession from "redux-persist/lib/storage/session";
