@@ -65,6 +65,12 @@ The **JsonTree** component has three parameters:
 Since each component has props of the current node and the parent node, it is easy to operate on the node(such as add, delete node) without 
 query operations(such as recursive query)
 
+**How to avoid over-rendering **
+
+How to avoid over-rendering is an important thing. When the user add, delete, and edit the node., First, we let each component force update, but we only want the content to be changed to update itself. So we use React.memo to do this. React.memo will compare the preview status and next status of content and determine if the component should be updated.
+
+Finally, we avoided over rendering.
+
 # About automatic testing: # 
 
 I created the automative testing script under the “**Cypress/integration**” directory. The automative test includes show, add, delete and edit testing.
