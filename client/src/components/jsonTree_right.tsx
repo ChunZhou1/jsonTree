@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect } from "react";
 
 import getRequest from "../api";
 
@@ -11,8 +11,6 @@ import { SubNode, LeafNode } from "./node";
 
 const URL = "https://bs-random-json.vercel.app/api/data ";
 
-//var count1 = 0;
-
 export interface Nodes {
   node: {
     [propName: string]: any[];
@@ -20,56 +18,52 @@ export interface Nodes {
   preNode: {
     [propName: string]: any[];
   };
-  reflashFun: Function;
-  NodeStr: string;
+
+  handleReflash: Function;
 }
 
 const JsonTree_container = () => {
   const [data, setData] = useState<Nodes["node"]>({}); //ajax data
-  const [count, setCount] = useState(0); //used to force update
+  //used to reflash
+  const [count, setCount] = useState(0); //used to rendering
 
   useEffect(() => {
     getRequest(URL).then((result) => {
+      //console.log(result);
+
       setData(result);
     });
   }, []);
 
-  const reflashFun = () => {
-    //console.log("setCount");
-    setCount((count) => count + 1); //import force update
+  const handleReflash = () => {
+    //reflash the tree
+    setCount(count + 1);
   };
 
   return (
     <div style={{ marginLeft: "40%", marginTop: "10%", width: "60%" }}>
-      <JsonTree_p
-        node={data}
-        preNode={data}
-        reflashFun={reflashFun}
-        NodeStr={JSON.stringify(data)}
-      />
+      <JsonTree node={data} preNode={data} handleReflash={handleReflash} />
     </div>
   );
 };
 
+///////////////////////////////////////////////////////////////
 //////////Json tree/////we use recursive to display whole tree///////////////////////////////
-///input: node: current node
+///input: node: current node to display
 /////////preNode: parents node,we will use it to add,delete node  !important
-/////////handleReflash: when add or delete,we should update tree, this is callback function
-/////////  NodeStr: this parameter is very important, Although I force update, but React.memo use this parameter to determin if the component should be updated
-////////// The reason why we convert node to string is that the node is object,if node is changed,the previous state and next state of node are all changed,
-////////// in this situation,we can not use React.memo to determin if we should update, so we must convert it to string and pass to the child component
+/////////handleReflash: when add or delete,we should rendering the whole tree,this is callback fun
 
 function findStr(obj: string) {
   return obj === this;
 }
 
-const JsonTree: React.FC<Nodes> = ({ node, preNode, reflashFun, NodeStr }) => {
+const JsonTree: React.FC<Nodes> = ({ node, handleReflash, preNode }) => {
   let element = [];
   let temp;
   //If we want to display sub tree(expand/Collapse), the element which be put into the array should be displayed
   const [display, setDisplay] = useState([]);
+  const [count, setCount] = useState(0); //used to rendering the current node
   const [visible, setVisible] = useState(false); //if display error message;
-  const [count, setCount] = useState(0);
 
   //close error message dialog
   const handleOK = () => {
@@ -101,6 +95,7 @@ const JsonTree: React.FC<Nodes> = ({ node, preNode, reflashFun, NodeStr }) => {
         if (result === false) {
           //display error message
           setVisible(true);
+          return;
         }
         break;
 
@@ -111,13 +106,13 @@ const JsonTree: React.FC<Nodes> = ({ node, preNode, reflashFun, NodeStr }) => {
       case MODIFY:
         processAfterFind(preNode, node, key, newValue, MODIFY);
         if (typeof node === "object") {
-          setCount((count) => count + 1); //we only need to update this component only and do not need to force update
+          //we do not need to render whole tree
+          setCount(count + 1);
           return;
         }
         break;
     }
-
-    reflashFun(); //force update, But no problem,we use React.memo to determin if we should update
+    handleReflash();
   };
 
   //The code below is used to display tree
@@ -163,11 +158,10 @@ const JsonTree: React.FC<Nodes> = ({ node, preNode, reflashFun, NodeStr }) => {
         //display array
         const subTree = tempArray.map((item: any) => {
           return (
-            <JsonTree_p
+            <JsonTree
               node={item}
+              handleReflash={handleReflash}
               preNode={tempArray}
-              reflashFun={reflashFun}
-              NodeStr={JSON.stringify(item)} //important! must be passed on the child compoennt along with node object
             />
           );
         });
@@ -184,8 +178,6 @@ const JsonTree: React.FC<Nodes> = ({ node, preNode, reflashFun, NodeStr }) => {
       }
     }
   }
-
-  //console.log(count1++);
 
   return (
     <div>
@@ -213,19 +205,5 @@ const JsonTree: React.FC<Nodes> = ({ node, preNode, reflashFun, NodeStr }) => {
     </div>
   );
 };
-
-/////////////////////////////////////////React.memo function/////////////////////////////////////////////
-function comFun(
-  preProp: Readonly<React.PropsWithChildren<Nodes>>,
-  nextProp: Readonly<React.PropsWithChildren<Nodes>>
-) {
-  //if the content of component does not change,we should not update it
-
-  return preProp.NodeStr === nextProp.NodeStr;
-}
-
-/////////////Important!! used to determin if child component should update itself when parent component let it update
-
-const JsonTree_p = memo(JsonTree, comFun);
 
 export default JsonTree_container;
